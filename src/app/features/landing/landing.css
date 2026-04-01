@@ -3,6 +3,10 @@
   padding: 50px;
 }
 
+.btn-container {
+  margin-top: 40px;
+}
+
 .btn {
   background-color: #fff;
   color: #00674f;

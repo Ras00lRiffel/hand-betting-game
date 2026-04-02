@@ -1,1 +1,22 @@
-<p>game works!</p>
+@if (!state.isGameOver) {
+    <div class="player">
+        <h2>Current Value: {{ lastValue }}</h2>
+
+        <div class="player-hand">
+            @for (tile of state.playerHand; track tile.id) {
+            <div class="tile">{{ tile.label }}</div>
+            }
+        </div>
+    </div>
+
+    <div class="actions">
+        <button class="btn" (click)="predict('higher')">Bet Higher</button>
+        <button class="btn" (click)="predict('lower')">Bet Lower</button>
+    </div>
+
+    <div class="player-score">
+        <h2>Player Score: {{ state.playerScore }}</h2>
+    </div>
+}
+
+<button class="exit" routerLink="">Exit</button>

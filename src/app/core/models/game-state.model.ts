@@ -8,7 +8,7 @@ export interface GameState {
     // The current hand of the player
     playerHand: Tile[]; 
     // For undo functionality
-    playerPreviousHand: Tile[];
+    playerPreviousHand: Tile[][];
     // To track the player's score based on the tiles in hand
     playerScore: number; 
     // To track the values of dragon and wind tiles

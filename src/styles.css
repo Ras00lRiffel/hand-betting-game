@@ -10,3 +10,36 @@ h1,
 p {
   color: #fff;
 }
+
+.btn {
+  background-color: #fff;
+  color: #00674f;
+  border: none;
+  padding: 10px 20px;
+  font-size: 16px;
+  cursor: pointer;
+  border-radius: 5px;
+  border: #00674f solid 2px;
+}
+
+.btn:hover {
+  background-color: #00674f;
+  color: #fff;
+  border: #fff solid 2px;
+}
+
+.exit {
+  background-color: #da1313;
+  color: #fff;
+  border: #da1313 solid 2px;
+  padding: 10px 20px;
+  font-size: 16px;
+  cursor: pointer;
+  border-radius: 5px;
+}
+
+.exit:hover {
+  background-color: #fff;
+  color: #da1313;
+  border: #fff solid 2px;
+}

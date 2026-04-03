@@ -7,6 +7,8 @@ export interface Tile {
     value: number;
     // The label for the tile (e.g., "1", "East Wind", "Red Dragon")
     label: string;
+    // Optional image path for dragon tiles
+    image?: string;
 }
 
 export type TileType = 'number' | 'dragon' | 'wind';

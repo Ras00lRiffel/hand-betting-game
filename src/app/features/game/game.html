@@ -6,7 +6,17 @@
                 <h3>Current Hand:</h3>
                 <div class="player-hand">
                     @for (tile of state.playerHand; track tile.id) {
-                        <div class="tile">{{ tile.label }}</div>
+                        <div class="tile">
+                            <span class="tile-value">{{ tile.value }}</span>
+                            @if(tile.type === 'dragon') {
+                                <img class="card-image" [src]="'assets/images/' + tile.image" alt="{{ tile.label }}">
+                            } @else if(tile.type === 'wind') {
+                                <span>{{ tile.label }}</span>
+                                <img class="card-image" [src]="'assets/images/' + tile.image" alt="{{ tile.label }}">
+                            } @else {
+                                <img class="card-image" [src]="'assets/images/' + tile.image" alt="{{ tile.label }}">
+                            }
+                        </div>
                     }
                 </div>
             </div>
@@ -30,14 +40,24 @@
     </div>
 
     <div class="player-score">
-        <h2>History:</h2>
+        <h2>Previous Hand:</h2>
         <div class="history">
             @for (tile of state.playerPreviousHand; track tile.id) {
-               <div class="tile">{{ tile.label }}</div>
+               <div class="tile">
+                    <span>{{ tile.value }}</span>
+                    <img class="card-image" [src]="'assets/images/' + tile.image" alt="{{ tile.label }}">
+                </div>
             }
         </div>
     </div>
     <button class="exit" routerLink="">Exit</button>
 }
 
-
+@if(state.isGameOver) {
+    <div class="game-over">
+        <h1>Game Over!</h1>
+        <p>{{ state.reason }}</p>
+        <p>Your final score: {{ this.lastValue }}</p>
+        <button  class="btn" (click)="restart()">Play Again</button>
+    </div>
+}

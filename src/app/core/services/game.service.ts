@@ -7,8 +7,12 @@ import { Tile } from '../models/tiles.model';
 export class GameService {
     constructor(private deckService: DeckService) {}
 
-    // Start a new game by creating a new deck and initializing the game state
-    public startNewGame(): GameState {
+    /**
+     * Starts a new game by creating a new deck, initializing non-number tile values,
+     * and returning the initial game state.
+     * @returns {GameState} The initialized game state for a new game.
+     */
+    startNewGame(): GameState {
         let deck = this.deckService.createDeck();
         let nonNumberTileValues: Record<string, number> = {};
         deck.forEach(tile => {
@@ -30,14 +34,20 @@ export class GameService {
         }
     }
 
-    // Draw 2 tiles for the player, reshuffling the discard pile back into the draw pile if necessary
-    public drawTiles(gameState: GameState): GameState {
+    /**
+     * Draws two tiles for the player. If the draw pile has fewer than two tiles,
+     * reshuffles the discard pile and a new deck into the draw pile (up to two times).
+     * Ends the game if no more tiles can be drawn after two shuffles.
+     * @param {GameState} gameState - The current game state.
+     * @returns {GameState} The updated game state after drawing tiles.
+     */
+    drawTiles(gameState: GameState): GameState {
         let drawPile = [...gameState.drawPile];
         let discardPile = [...gameState.discardPile];
 
         if (drawPile.length < 2) {
             if (gameState.shuffleCount >= 2) {
-                return { ...gameState, isGameOver: true };
+                return { ...gameState, isGameOver: true, reason: "No more tiles to draw" };
             }
 
             drawPile =  this.deckService.shuffle([
@@ -59,8 +69,15 @@ export class GameService {
         };
     }
 
-    // Update the values of non-number tiles based on whether the player's prediction was correct or not
-    public updateTileValues(gameState: GameState, hand: Tile[], result: boolean): GameState {
+    /**
+     * Updates the values of non-number tiles in the player's hand based on the result
+     * of the player's prediction (correct or incorrect).
+     * @param {GameState} gameState - The current game state.
+     * @param {Tile[]} hand - The player's current hand.
+     * @param {boolean} result - Whether the player's prediction was correct.
+     * @returns {GameState} The updated game state with modified tile values.
+     */
+    updateTileValues(gameState: GameState, hand: Tile[], result: boolean): GameState {
         const nonNumberTileValues = { ...gameState.nonNumberTileValues };
         hand.forEach(t => {
             if (t.type !== 'number') {
@@ -73,18 +90,33 @@ export class GameService {
         return { ...gameState, nonNumberTileValues };
     }
 
-
-    public isGameOver(gameState: GameState): boolean {
+    /**
+     * Checks if the game is over based on the values of the player's hand.
+     * The game ends if any tile value is 0 or 10.
+     * @param {GameState} gameState - The current game state.
+     * @returns {boolean | GameState} Returns false if the game is not over,
+     * or an updated game state if the game is over.
+     */
+    isGameOver(gameState: GameState): boolean {
         gameState.playerHand.forEach(t => {
-            if (t.value <= 1 || t.value >= 9) {
-                return true;
-            }            
+            if (t.value === 0 ) {
+                return { ...gameState, isGameOver: true, reason: "Player's tile value is too low" };
+            }
+            if (t.value === 10) {
+                return { ...gameState, isGameOver: true, reason: "Player's tile value is too high" };
+            }
             return false;
         });
         return false;
     }
 
-    public calculateValue(hand: Tile[], dynamic: any): number {
+    /**
+     * Calculates the total value of the player's hand, using dynamic values for non-number tiles.
+     * @param {Tile[]} hand - The player's hand.
+     * @param {any} dynamic - The current dynamic values for non-number tiles.
+     * @returns {number} The total value of the hand.
+     */
+    calculateValue(hand: Tile[], dynamic: any): number {
         const result = hand.reduce((sum, t) => {
             if (t.type === 'number') return sum + t.value;
             const value = sum + (dynamic[t.label] ?? t.value);

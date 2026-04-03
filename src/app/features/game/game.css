@@ -25,7 +25,38 @@
   display: flex;
   justify-content: center;
   align-items: center;
+  flex-direction: column;
 
-  height: 80px;
-  width: 50px;
+  height: 150px;
+  width: 100px;
+
+  position: relative;
+}
+
+.tile-value {
+  font-size: 18px;
+  font-weight: bold;
+  margin-bottom: 10px;
+
+  position: absolute;
+  top: 10px;
+  left: 10px;
+}
+
+.game-over {
+  text-align: center;
+  margin-top: 50px;
+}
+
+.card-image {
+  width: 100px;
+  height: 100px;
+  margin-left: 5px;
+}
+
+.cards {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  margin-top: 20px;
 }

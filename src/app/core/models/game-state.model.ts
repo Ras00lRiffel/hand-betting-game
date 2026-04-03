@@ -19,4 +19,6 @@ export interface GameState {
     shuffleCount: number;
     // To track if the player has won or lost the game
     isGameOver: boolean;
+    // Optional reason for game over (e.g., "No more tiles to draw")
+    reason?: string;
 }

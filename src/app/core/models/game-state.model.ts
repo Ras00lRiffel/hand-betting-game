@@ -5,10 +5,12 @@ export interface GameState {
     drawPile: Tile[];
     // To track discarded tiles for potential future use (e.g., reshuffling)
     discardPile: Tile[];
+    // To track the history of played tiles
+    history: Tile[];
     // The current hand of the player
     playerHand: Tile[]; 
     // For undo functionality
-    playerPreviousHand: Tile[][];
+    playerPreviousHand: Tile[];
     // To track the player's score based on the tiles in hand
     playerScore: number; 
     // To track the values of dragon and wind tiles

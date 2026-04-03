@@ -1,12 +1,27 @@
 @if (!state.isGameOver) {
     <div class="player">
         <h2>Current Value: {{ lastValue }}</h2>
-
-        <div class="player-hand">
-            @for (tile of state.playerHand; track tile.id) {
-            <div class="tile">{{ tile.label }}</div>
-            }
+        <div class="cards">
+            <div class="player-cards">
+                <h3>Current Hand:</h3>
+                <div class="player-hand">
+                    @for (tile of state.playerHand; track tile.id) {
+                        <div class="tile">{{ tile.label }}</div>
+                    }
+                </div>
+            </div>
+            <div class="game-cards">
+                <div class="discard-pile">
+                    <h4>Discard Pile:</h4>
+                    {{ state.discardPile.length }}
+                </div>
+                <div class="draw-pile">
+                    <h4>Draw Pile:</h4>
+                    {{ state.drawPile.length }}
+                </div>
+            </div>
         </div>
+        
     </div>
 
     <div class="actions">
@@ -15,7 +30,12 @@
     </div>
 
     <div class="player-score">
-        <h2>Player Score: {{ state.playerScore }}</h2>
+        <h2>History:</h2>
+        <div class="history">
+            @for (tile of state.playerPreviousHand; track tile.id) {
+               <div class="tile">{{ tile.label }}</div>
+            }
+        </div>
     </div>
 }
 

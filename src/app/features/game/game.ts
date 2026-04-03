@@ -19,48 +19,53 @@ export class Game {
     this.nextHand();
   }
 
-  nextHand(){
+  // Draw the initial hand for the player and calculate its value
+  private nextHand(){
     this.state =  this.gameService.drawTiles(this.state);
     this.lastValue = this.gameService.calculateValue(
       this.state.playerHand, 
       this.state.nonNumberTileValues
     );
+    this.state.playerPreviousHand = [];
   }
 
-  predict(type: 'higher' | 'lower') {
-  const oldValue = this.lastValue;
+  // Handle player's prediction and update game state accordingly
+  public predict(type: 'higher' | 'lower') {
+    // Move current hand to discard pile and store it as previous hand
+    this.state.discardPile.push(...this.state.playerHand);
+    
+    // Store the current hand as the previous hand before drawing new tiles
+    this.state.playerPreviousHand = this.state.playerHand;
 
-  // 1. Draw new hand
-  const newState = this.gameService.drawTiles(this.state);
+    const oldValue = this.lastValue;
 
-  // 2. Calculate new value
-  const newHandValue = this.gameService.calculateValue(
-    newState.playerHand,
-    newState.nonNumberTileValues
-  );
+    // 1. Draw new hand
+    const newState = this.gameService.drawTiles(this.state);
 
-  // 3. Determine win/loss
-  const win =
-    (type === 'higher' && newHandValue > oldValue) ||
-    (type === 'lower' && newHandValue < oldValue);
+    // 2. Calculate new value
+    const newHandValue = this.gameService.calculateValue(
+        newState.playerHand,
+        newState.nonNumberTileValues
+    );
 
-  // 4. Update tile values (VERY IMPORTANT)
-  const updatedState = this.gameService.updateTileValues(
-    newState,
-    newState.playerHand,
-    win
-  );
+    // 3. Determine win/loss
+    const gameOutcome =
+        (type === 'higher' && newHandValue > oldValue) ||
+        (type === 'lower' && newHandValue < oldValue);
 
-  // 5. Update score
-  updatedState.score += win ? 1 : -1;
+    // 4. Update tile values based on outcome
+    const updatedState = this.gameService.updateTileValues(
+        newState,
+        newState.playerHand,
+        gameOutcome
+    );
 
-  // 6. Check game over
-  if (this.gameService.isGameOver(updatedState)) {
-    updatedState.gameOver = true;
+    // 5. Check game over
+    if (this.gameService.isGameOver(updatedState)) {
+        updatedState.isGameOver = true;
+    }
+    // 6. Finally update state
+    this.state = updatedState;
+    this.lastValue = newHandValue;
   }
-
-  // 7. Finally update state
-  this.state = updatedState;
-  this.lastValue = newHandValue;
-}
 }

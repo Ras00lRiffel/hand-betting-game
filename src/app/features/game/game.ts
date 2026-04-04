@@ -94,7 +94,6 @@ export class Game {
 
   this.topFiveScores.sort((a, b) => b.score - a.score);
   this.topFiveScores = [...this.topFiveScores.slice(0, 5)];
-  console.log('Top 5 Scores:', this.topFiveScores);
 
   // 9. Update state
   this.state = updatedState;

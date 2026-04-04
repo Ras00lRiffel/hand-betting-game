@@ -48,10 +48,6 @@ export class GameService {
         let discardPile = [...gameState.discardPile];
 
         if (drawPile.length < 2) {
-            if (gameState.shuffleCount >= 2) {
-                return { ...gameState, isGameOver: true, reason: "No more tiles to draw" };
-            }
-
             drawPile =  this.deckService.shuffle([
                 ...discardPile,
                 ...this.deckService.createDeck()
@@ -114,6 +110,14 @@ export class GameService {
         ...gameState,
         isGameOver: true,
         reason: "Player's tile value is too high"
+      };
+    }
+
+    if(gameState.shuffleCount >= 2 && gameState.drawPile.length === 0) {
+      return {
+        ...gameState,
+        isGameOver: true,
+        reason: "No more tiles to draw"
       };
     }
   }

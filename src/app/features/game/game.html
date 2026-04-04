@@ -74,7 +74,7 @@
         @for(tile of this.topFiveScores; track tile.score) {
         <div class="score-entry">
             <span>Score: {{ tile.score }}</span>
-            <p>Outcome: {{ state.gameOutcome }}</p>
+            <p>Outcome: {{ tile.outcome }}</p>
             <div class="hand-preview">
                 @for (t of tile.tile; track t.id) {
                     <div class="tile">

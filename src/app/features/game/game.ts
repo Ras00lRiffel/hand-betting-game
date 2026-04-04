@@ -13,7 +13,7 @@ import { Tile } from '../../core/models/tiles.model';
 export class Game {
   public state: GameState;
   public lastValue = 0;
-  public topFiveScores: { tile: Tile[]; score: number }[] = [];
+  public topFiveScores: { tile: Tile[]; score: number; outcome: 'win' | 'lose' }[] = [];
 
   /**
    * Initializes the Game component, sets up the initial game state,
@@ -88,11 +88,13 @@ export class Game {
   // 8. Store score (use correct hand!)
   this.topFiveScores.push({
     tile: previousHand,
-    score: oldValue
+    score: oldValue,
+    outcome: newState.gameOutcome
   });
 
   this.topFiveScores.sort((a, b) => b.score - a.score);
-  this.topFiveScores = this.topFiveScores.slice(0, 5);
+  this.topFiveScores = [...this.topFiveScores.slice(0, 5)];
+  console.log('Top 5 Scores:', this.topFiveScores);
 
   // 9. Update state
   this.state = updatedState;
@@ -105,6 +107,7 @@ export class Game {
   restart() {
     this.state = this.gameService.startNewGame();
     this.state.shuffleCount = 0;
+    this.topFiveScores = [];
     this.nextHand();
   }
 }

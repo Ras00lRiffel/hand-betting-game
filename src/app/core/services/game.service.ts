@@ -113,7 +113,7 @@ export class GameService {
       };
     }
 
-    if(gameState.shuffleCount >= 2 && gameState.drawPile.length === 0) {
+    if(gameState.shuffleCount >= 0 && gameState.drawPile.length === 0) {
       return {
         ...gameState,
         isGameOver: true,

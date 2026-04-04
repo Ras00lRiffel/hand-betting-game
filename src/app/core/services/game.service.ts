@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { GameState } from '../models/game-state.model';
 import { DeckService } from './deck.service';
 import { Tile } from '../models/tiles.model';
+import { Game } from '../../features/game/game';
 
 @Injectable({ providedIn: 'root' })
 export class GameService {
@@ -20,7 +21,8 @@ export class GameService {
                 nonNumberTileValues[tile.label] = tile.value;
             }
         }); // Ensure unique IDs for all tiles
-        
+        console.log(deck);
+        console.log(nonNumberTileValues);
         return {
             drawPile : deck,
             discardPile: [],
@@ -84,7 +86,7 @@ export class GameService {
                 nonNumberTileValues[t.label] = result
                     ? (nonNumberTileValues[t.value] ?? 5) + 1
                     : (nonNumberTileValues[t.value] ?? 5) - 1;
-                t.value = nonNumberTileValues[t.label];
+                t.valueChange = nonNumberTileValues[t.label];
             }
         });
         return { ...gameState, nonNumberTileValues };
@@ -94,21 +96,30 @@ export class GameService {
      * Checks if the game is over based on the values of the player's hand.
      * The game ends if any tile value is 0 or 10.
      * @param {GameState} gameState - The current game state.
-     * @returns {boolean | GameState} Returns false if the game is not over,
+     * @returns {GameState} Returns false if the game is not over,
      * or an updated game state if the game is over.
      */
-    isGameOver(gameState: GameState): boolean {
-        gameState.playerHand.forEach(t => {
-            if (t.value === 0 ) {
-                return { ...gameState, isGameOver: true, reason: "Player's tile value is too low" };
-            }
-            if (t.value === 10) {
-                return { ...gameState, isGameOver: true, reason: "Player's tile value is too high" };
-            }
-            return false;
-        });
-        return false;
+    isGameOver(gameState: GameState): GameState {
+  for (const t of gameState.playerHand) {
+    if (t.value === 0) {
+      return {
+        ...gameState,
+        isGameOver: true,
+        reason: "Player's tile value is too low"
+      };
     }
+
+    if (t.value === 10) {
+      return {
+        ...gameState,
+        isGameOver: true,
+        reason: "Player's tile value is too high"
+      };
+    }
+  }
+
+  return { ...gameState, isGameOver: false };
+}
 
     /**
      * Calculates the total value of the player's hand, using dynamic values for non-number tiles.
@@ -119,7 +130,8 @@ export class GameService {
     calculateValue(hand: Tile[], dynamic: any): number {
         const result = hand.reduce((sum, t) => {
             if (t.type === 'number') return sum + t.value;
-            const value = sum + (dynamic[t.label] ?? t.value);
+            let val = (t.valueChange !== undefined) ? t.valueChange : t.value;
+            const value = sum + (dynamic[t.label] ?? val);
             return value;
         }, 0);
         return result;

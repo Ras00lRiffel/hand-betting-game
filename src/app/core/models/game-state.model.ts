@@ -21,4 +21,6 @@ export interface GameState {
     isGameOver: boolean;
     // Optional reason for game over (e.g., "No more tiles to draw")
     reason?: string;
+    // Optional property to track the outcome of the last prediction
+    gameOutcome?: 'win' | 'lose' | 'draw';
 }

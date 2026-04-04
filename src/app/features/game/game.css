@@ -9,7 +9,8 @@
   justify-content: center;
   margin-top: 20px;
 }
-.history {
+.history,
+.hand-preview {
   display: flex;
   flex-wrap: wrap;
   margin-top: 20px;
@@ -50,7 +51,7 @@
 
 .card-image {
   width: 100px;
-  height: 100px;
+  max-width: 100%;
   margin-left: 5px;
 }
 
@@ -59,4 +60,31 @@
   justify-content: space-around;
   align-items: center;
   margin-top: 20px;
+}
+
+.hand-preview .tile {
+  width: 80px;
+  height: 120px;
+}
+
+.hand-preview .tile img {
+  width: 80px;
+  max-width: 100%;
+  height: auto;
+}
+
+.scores {
+  display: flex;
+}
+.score-entry {
+  margin-left: 10px;
+}
+
+.game-btn {
+  text-align: center;
+  margin-top: 30px;
+}
+
+.bet {
+  margin-left: 10px;
 }

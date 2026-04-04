@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { GameState } from '../../core/models/game-state.model';
 import { GameService } from '../../core/services/game.service';
 import { RouterLink } from "@angular/router";
+import { Tile } from '../../core/models/tiles.model';
 
 @Component({
   selector: 'app-game',
@@ -12,6 +13,7 @@ import { RouterLink } from "@angular/router";
 export class Game {
   public state: GameState;
   public lastValue = 0;
+  public topFiveScores: { tile: Tile[]; score: number }[] = [];
 
   /**
    * Initializes the Game component, sets up the initial game state,
@@ -44,43 +46,58 @@ export class Game {
    * @param type The player's prediction: 'higher' or 'lower'.
    */
   predict(type: 'higher' | 'lower') {
-    // Move current hand to discard pile and store it as previous hand
-    this.state.discardPile.push(...this.state.playerHand);
 
-    // Store the current hand as the previous hand before drawing new tiles
-    this.state.playerPreviousHand = this.state.playerHand;
+  // 1. Store previous hand + value
+  const previousHand = [...this.state.playerHand];
+  const oldValue = this.lastValue;
 
-    const oldValue = this.lastValue;
+  // 2. Move to discard
+  this.state.discardPile.push(...previousHand);
+  this.state.playerPreviousHand = previousHand;
 
-    // 1. Draw new hand
-    const newState = this.gameService.drawTiles(this.state);
+  // 3. Draw new hand
+  const newState = this.gameService.drawTiles(this.state);
 
-    // 2. Calculate new value
-    const newHandValue = this.gameService.calculateValue(
-      newState.playerHand,
-      newState.nonNumberTileValues
-    );
+  // 4. Calculate new value (BEFORE scaling)
+  const newHandValue = this.gameService.calculateValue(
+    newState.playerHand,
+    newState.nonNumberTileValues
+  );
 
-    // 3. Determine win/loss
-    const gameOutcome =
-      (type === 'higher' && newHandValue > oldValue) ||
-      (type === 'lower' && newHandValue < oldValue);
-
-    // 4. Update tile values based on outcome
-    const updatedState = this.gameService.updateTileValues(
-      newState,
-      newState.playerHand,
-      gameOutcome
-    );
-
-    // 5. Check game over
-    if (this.gameService.isGameOver(updatedState)) {
-      updatedState.isGameOver = true;
-    }
-    // 6. Finally update state
-    this.state = updatedState;
-    this.lastValue = newHandValue;
+  // 5. Determine win/loss
+  const gameOutcome =
+    (type === 'higher' && newHandValue > oldValue) ||
+    (type === 'lower' && newHandValue < oldValue);
+  
+  if (gameOutcome) {
+    newState.gameOutcome = 'win';
+  } else {
+    newState.gameOutcome = 'lose';
   }
+
+  // 6. NOW update tile values
+  let updatedState = this.gameService.updateTileValues(
+    newState,
+    newState.playerHand,
+    gameOutcome
+  );
+
+  // 7. Check game over
+  updatedState = this.gameService.isGameOver(updatedState);
+
+  // 8. Store score (use correct hand!)
+  this.topFiveScores.push({
+    tile: previousHand,
+    score: oldValue
+  });
+
+  this.topFiveScores.sort((a, b) => b.score - a.score);
+  this.topFiveScores = this.topFiveScores.slice(0, 5);
+
+  // 9. Update state
+  this.state = updatedState;
+  this.lastValue = newHandValue;
+}
 
   /**
    * Restarts the game by resetting the state and drawing a new hand.

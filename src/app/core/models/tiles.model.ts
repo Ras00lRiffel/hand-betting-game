@@ -5,6 +5,8 @@ export interface Tile {
     type: TileType;
     // The numeric value of the tile (1-9 for number tiles, special values for dragon/wind tiles)
     value: number;
+    // Optional property to track changes in tile value after predictions
+    valueChange?: number;
     // The label for the tile (e.g., "1", "East Wind", "Red Dragon")
     label: string;
     // Optional image path for dragon tiles

@@ -20,7 +20,22 @@
                     }
                 </div>
             </div>
+            <!-- Display Previous Hand -->
+            <div class="player-score">
+                <h2>Previous Hand:</h2>
+                <div class="history">
+                    @for (tile of state.playerPreviousHand; track tile.id) {
+                    <div class="tile">
+                            <span class="tile-value">{{ tile.valueChange ?? tile.value }}</span>
+                            <img class="card-image" [src]="'assets/images/' + tile.image" alt="{{ tile.label }}">
+                        </div>
+                    }
+                </div>
+            </div>
+
+
             <div class="game-cards">
+                <h3>Deck</h3>
                 <div class="discard-pile">
                     <h4>Discard Pile:</h4>
                     {{ state.discardPile.length }}
@@ -35,22 +50,9 @@
     </div>
 
     <div class="actions">
-        <button class="btn" (click)="predict('higher')">Bet Higher</button>
-        <button class="btn" (click)="predict('lower')">Bet Lower</button>
+        <button class="btn bet" (click)="predict('higher')">Bet Higher</button>
+        <button class="btn bet" (click)="predict('lower')">Bet Lower</button>
     </div>
-
-    <div class="player-score">
-        <h2>Previous Hand:</h2>
-        <div class="history">
-            @for (tile of state.playerPreviousHand; track tile.id) {
-               <div class="tile">
-                    <span>{{ tile.value }}</span>
-                    <img class="card-image" [src]="'assets/images/' + tile.image" alt="{{ tile.label }}">
-                </div>
-            }
-        </div>
-    </div>
-    <button class="exit" routerLink="">Exit</button>
 }
 
 @if(state.isGameOver) {
@@ -61,3 +63,27 @@
         <button  class="btn" (click)="restart()">Play Again</button>
     </div>
 }
+
+<div class="leaderboard">
+    <h2>Top 5 Scores</h2>
+    <div class="scores">
+        @for(tile of this.topFiveScores; track tile.score) {
+        <div class="score-entry">
+            <span>Score: {{ tile.score }}</span>
+            <p>Outcome: {{ state.gameOutcome }}</p>
+            <div class="hand-preview">
+                @for (t of tile.tile; track t.id) {
+                    <div class="tile">
+                        <span class="tile-value">{{ t.valueChange ?? t.value }}</span>
+                        <img class="card-image" [src]="'assets/images/' + t.image" alt="{{ t.label }}">
+                    </div>
+                }
+            </div>
+        </div>
+    }
+    </div>
+</div>
+
+<div class="game-btn">
+    <button class="exit" routerLink="">Exit Game</button>
+</div>
